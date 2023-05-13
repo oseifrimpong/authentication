@@ -1,0 +1,232 @@
+basePath: /auth/api
+definitions:
+  model.APIRequest:
+    properties:
+      payload:
+        $ref: '#/definitions/model.Payload'
+      type:
+        type: string
+    required:
+    - payload
+    - type
+    type: object
+  model.APIResponse:
+    properties:
+      data:
+        additionalProperties: true
+        type: object
+      message:
+        type: string
+      status_code:
+        example: "0"
+        type: string
+    type: object
+  model.Payload:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  model.UpdatePasswordRequest:
+    properties:
+      password:
+        type: string
+    type: object
+  model.VerifyEmailRequest:
+    properties:
+      ctx:
+        type: string
+      email:
+        type: string
+    required:
+    - email
+    type: object
+host: api.dev.regilex.com
+info:
+  contact:
+    email: obed@keyspecs.com
+    name: Keyspecs
+    url: http://www.keysepec.com/
+  description: Authentication and Authorization Service
+  title: Regilex Auth-Service API
+  version: "0.01"
+paths:
+  /healthcheck:
+    get:
+      consumes:
+      - '*/*'
+      description: Get the status of server and version
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.APIResponse'
+      summary: Show the status of server.
+      tags:
+      - root
+  /v1/login:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        Login user with the accepted type email, wechat or phone
+        For type email: only send email and password
+        For type phone: only send phone_code and number
+        For type wechat: only send code, encrypted_data and iv
+      parameters:
+      - description: Request Body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.APIRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.APIResponse'
+      summary: Login User
+      tags:
+      - v1
+  /v1/logout:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        Logout user with access token
+        Add Bearer prefix before Authorization value.
+      parameters:
+      - description: Bearer + Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.APIResponse'
+      summary: Logout
+      tags:
+      - v1
+  /v1/refresh:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        Refresh user's access and refresh tokens
+        Add Bearer prefix before Authorization value.
+      parameters:
+      - description: refresh Token
+        in: header
+        name: X-Request-Token
+        required: true
+        type: string
+      - description: Bearer + Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.APIResponse'
+      summary: Refresh tokens
+      tags:
+      - v1
+  /v1/register:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        Register user with the accepted type email, wechat or phone
+        For type email: only send email and password
+        For type phone: only send phone_code and number
+        For type wechat: only send code, encrypted_data and iv
+      parameters:
+      - description: Request Body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.APIRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.APIResponse'
+      summary: Register User
+      tags:
+      - v1
+  /v1/update:
+    put:
+      consumes:
+      - application/json
+      description: |-
+        Logout user with access token
+        Add Bearer prefix before Authorization value.
+      parameters:
+      - description: Bearer + Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Request Body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.UpdatePasswordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.APIResponse'
+      summary: Update Password
+      tags:
+      - v1
+  /v1/verify:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        Logout user with access token
+        Add Bearer prefix before Authorization value.
+      parameters:
+      - description: Request Body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.VerifyEmailRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.APIResponse'
+      summary: Verify User's Email
+      tags:
+      - v1
+schemes:
+- http
+- https
+swagger: "2.0"

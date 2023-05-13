@@ -1,0 +1,49 @@
+version: "3"
+services:
+  auth-service:
+    build:
+      context: ..
+      dockerfile: ./deploy/docker/Dockerfile
+    container_name: auth-service
+    env_file:
+      ../.env
+    networks:
+      auth-network:
+        aliases:
+          - auth-redis
+    depends_on:
+      - redis
+      - postgresql
+    ports:
+      - "3003:3000"
+
+  redis:
+    image: redis:6-alpine
+    container_name: auth-redis
+    networks:
+      auth-network:
+        aliases:
+          - auth-redis
+    ports:
+      - "6379:6379"
+  
+  postgresql:
+    image: postgres
+    container_name: auth-postgres
+    ports:
+      - "5400:5432"
+    env_file:
+      ../.env
+    volumes:
+      - ./scripts/db/init.sh:/docker-entrypoint-initdb.d/init-user-db.sh
+      - auth-data:/var/lib/postgresql/data
+    restart: always
+    networks:
+      auth-network:
+        aliases:
+          - auth-postgres
+
+networks:
+  auth-network: null
+volumes:
+  auth-data: null
