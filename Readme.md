@@ -41,6 +41,7 @@ To use this service, follow the instructions below:
 
 - Make a copy of `env.example.com` to `env`
 - Install [Go](https://go.dev/doc/install)
+- Install [Redis](https://redis.io/docs/getting-started/installation/)
 - Install [PostgreSQL](https://www.postgresql.org/download/)
 
 ## docker Setup
